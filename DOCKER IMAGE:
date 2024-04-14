@@ -1,0 +1,72 @@
+DOCKER IMAGE:
+
+Below is my github repo "https://github.com/buzzCraft/ACIT4040-AI-Project/tree/pratima_seamless"
+I am doing these 4 steps on my local machine to implement the seamleassm4T model and code of seamleassm4T text to speech:
+1. Cloning the github repository of seamleassm4T "https://github.com/facebookresearch/seamless_communication.git".
+2. Using VS code terminal i fired this "cd seamless_communication-main"
+3. The i fired this : "pip install ."
+4. After that i was able to use the modules by firing the command in CLI "m4t_predict "Welcome to OsloMet?" t2st eng --src_lang eng --output_path english_translated_audio.wav"
+
+
+Now the requirement is my teammates want to use this set up and get it working using a Docker image. Can you please give me a step-by-step process to create a docker image for achieving this functionality.
+
+DOCKERFILE
+# Use an official Python runtime as a parent image
+FROM python:3.8-slim-buster
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the seamless_communication-main directory to the container
+COPY seamless_communication-main /app/seamless_communication-main
+
+# Install the required dependencies
+RUN pip install -r /app/seamless_communication-main/requirements.txt
+
+# Set the default command to run the m4t_predict script
+CMD ["python", "/app/seamless_communication-main/m4t_predict", "english_speech.wav", "s2tt", "eng", "--src_lang", "eng"]
+
+
+COMMANDS IN TERMINAL:
+- docker build -t seamlessm4t .
+- docker run -v /path/to/local/files:/app/files seamlessm4t english_speech.wav s2tt eng --src_lang eng
+
+23.09.2023
+
+FROM python:3.9-slim-buster
+
+WORKDIR /app
+
+COPY . /app
+
+RUN pip install --trusted-host pypi.python.org -r requirements.txt
+
+EXPOSE 80
+
+CMD ["m4t_predict", "english_speech.wav", "s2tt", "eng", "--src_lang", "eng"]
+
+
+128.39.78.223
+http://128.39.78.223:3000
+
+
+
+DOCKER IMAGE BY ALEXANDER:
+
+"FROM buzzcraft/sm4t:latest
+
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the seamless_communication-main directory to the container
+COPY seamless_communication-main /app/seamless_communication-main
+USER root
+RUN chown -R user:user /app/seamless_communication-main
+USER user
+# Install the required dependencies
+#RUN pip install -r /app/seamless_communication-main/requirements.txt
+WORKDIR /app/seamless_communication-main
+RUN pip install --user .
+# Set the default command to run the m4t_predict script
+CMD ["python", "/app/seamless_communication-main/scripts/m4t/predict/predict.py", "english_speech.wav", "s2tt", "eng", "--src_lang", "eng"]y"
